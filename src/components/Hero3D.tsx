@@ -1,23 +1,23 @@
 
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Sphere, MeshDistortMaterial, Float } from '@react-three/drei';
+import { OrbitControls, Sphere, Float } from '@react-three/drei';
 import { motion } from 'framer-motion';
 import { useRef, Suspense } from 'react';
 import { ArrowRight, Play } from 'lucide-react';
+import * as THREE from 'three';
 
 const AnimatedSphere = () => {
   const meshRef = useRef();
 
   return (
     <Float speed={1.4} rotationIntensity={1} floatIntensity={2}>
-      <Sphere ref={meshRef} args={[1, 64, 64]} scale={2.4}>
-        <MeshDistortMaterial
+      <Sphere ref={meshRef} args={[1, 32, 32]} scale={2.4}>
+        <meshStandardMaterial
           color="#8b5cf6"
-          attach="material"
-          distort={0.3}
-          speed={1.5}
-          roughness={0}
-          metalness={0.1}
+          roughness={0.1}
+          metalness={0.8}
+          transparent={true}
+          opacity={0.8}
         />
       </Sphere>
     </Float>
@@ -39,25 +39,27 @@ const Hero3D = () => {
       <div className="absolute inset-0 z-0">
         <Suspense fallback={<Fallback3D />}>
           <Canvas 
-            camera={{ position: [0, 0, 5] }}
+            camera={{ position: [0, 0, 5], fov: 75 }}
             gl={{ 
-              antialias: true, 
+              antialias: false,
               alpha: true,
-              preserveDrawingBuffer: false,
-              powerPreference: "default"
+              powerPreference: "high-performance"
             }}
             onCreated={({ gl }) => {
               gl.setClearColor('#000000', 0);
+              gl.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             }}
+            fallback={<Fallback3D />}
           >
-            <ambientLight intensity={0.5} />
-            <directionalLight position={[10, 10, 5]} intensity={1} />
+            <ambientLight intensity={0.6} />
+            <directionalLight position={[5, 5, 5]} intensity={0.8} />
+            <pointLight position={[-5, -5, -5]} intensity={0.4} />
             <AnimatedSphere />
             <OrbitControls 
               enableZoom={false} 
               enablePan={false} 
               autoRotate 
-              autoRotateSpeed={0.5}
+              autoRotateSpeed={1}
               enableDamping={true}
               dampingFactor={0.05}
             />
