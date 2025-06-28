@@ -1,70 +1,16 @@
 
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Sphere, Float } from '@react-three/drei';
 import { motion } from 'framer-motion';
-import { useRef, Suspense } from 'react';
 import { ArrowRight, Play } from 'lucide-react';
-import * as THREE from 'three';
-
-const AnimatedSphere = () => {
-  const meshRef = useRef();
-
-  return (
-    <Float speed={1.4} rotationIntensity={1} floatIntensity={2}>
-      <Sphere ref={meshRef} args={[1, 32, 32]} scale={2.4}>
-        <meshStandardMaterial
-          color="#8b5cf6"
-          roughness={0.1}
-          metalness={0.8}
-          transparent={true}
-          opacity={0.8}
-        />
-      </Sphere>
-    </Float>
-  );
-};
-
-const Fallback3D = () => {
-  return (
-    <div className="w-full h-full flex items-center justify-center">
-      <div className="w-96 h-96 rounded-full bg-gradient-to-br from-pink-500/20 to-purple-600/20 animate-pulse" />
-    </div>
-  );
-};
 
 const Hero3D = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background 3D Canvas */}
+      {/* Background gradient instead of 3D */}
       <div className="absolute inset-0 z-0">
-        <Suspense fallback={<Fallback3D />}>
-          <Canvas 
-            camera={{ position: [0, 0, 5], fov: 75 }}
-            gl={{ 
-              antialias: false,
-              alpha: true,
-              powerPreference: "high-performance"
-            }}
-            onCreated={({ gl }) => {
-              gl.setClearColor('#000000', 0);
-              gl.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            }}
-            fallback={<Fallback3D />}
-          >
-            <ambientLight intensity={0.6} />
-            <directionalLight position={[5, 5, 5]} intensity={0.8} />
-            <pointLight position={[-5, -5, -5]} intensity={0.4} />
-            <AnimatedSphere />
-            <OrbitControls 
-              enableZoom={false} 
-              enablePan={false} 
-              autoRotate 
-              autoRotateSpeed={1}
-              enableDamping={true}
-              dampingFactor={0.05}
-            />
-          </Canvas>
-        </Suspense>
+        <div className="w-full h-full bg-gradient-to-br from-purple-900/20 via-pink-900/20 to-blue-900/20">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(139,92,246,0.1)_0%,_transparent_50%)]"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-gradient-to-br from-pink-500/20 to-purple-600/20 animate-pulse"></div>
+        </div>
       </div>
 
       {/* Gradient overlay */}
