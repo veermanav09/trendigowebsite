@@ -1,12 +1,23 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Sphere, MeshDistortMaterial, Float } from '@react-three/drei';
+import { motion } from 'framer-motion';
+import { useState, useRef } from 'react';
+import { Instagram, Facebook, Youtube, Linkedin, ArrowRight, Star, TrendingUp, Users, Target } from 'lucide-react';
+import Hero3D from '../components/Hero3D';
+import ServicesSection from '../components/ServicesSection';
+import AboutSection from '../components/AboutSection';
+import ContactSection from '../components/ContactSection';
+import Navigation from '../components/Navigation';
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-black text-white overflow-hidden">
+      <Navigation />
+      <Hero3D />
+      <AboutSection />
+      <ServicesSection />
+      <ContactSection />
     </div>
   );
 };
