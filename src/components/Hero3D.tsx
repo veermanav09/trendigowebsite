@@ -1,8 +1,8 @@
 
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Sphere, MeshDistortMaterial, Float, Text } from '@react-three/drei';
+import { OrbitControls, Sphere, MeshDistortMaterial, Float } from '@react-three/drei';
 import { motion } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, Suspense } from 'react';
 import { ArrowRight, Play } from 'lucide-react';
 
 const AnimatedSphere = () => {
@@ -10,16 +10,25 @@ const AnimatedSphere = () => {
 
   return (
     <Float speed={1.4} rotationIntensity={1} floatIntensity={2}>
-      <Sphere ref={meshRef} args={[1, 100, 200]} scale={2.4}>
+      <Sphere ref={meshRef} args={[1, 64, 64]} scale={2.4}>
         <MeshDistortMaterial
           color="#8b5cf6"
           attach="material"
           distort={0.3}
           speed={1.5}
           roughness={0}
+          metalness={0.1}
         />
       </Sphere>
     </Float>
+  );
+};
+
+const Fallback3D = () => {
+  return (
+    <div className="w-full h-full flex items-center justify-center">
+      <div className="w-96 h-96 rounded-full bg-gradient-to-br from-pink-500/20 to-purple-600/20 animate-pulse" />
+    </div>
   );
 };
 
@@ -28,12 +37,32 @@ const Hero3D = () => {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background 3D Canvas */}
       <div className="absolute inset-0 z-0">
-        <Canvas camera={{ position: [0, 0, 5] }}>
-          <ambientLight intensity={0.5} />
-          <directionalLight position={[10, 10, 5]} intensity={1} />
-          <AnimatedSphere />
-          <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
-        </Canvas>
+        <Suspense fallback={<Fallback3D />}>
+          <Canvas 
+            camera={{ position: [0, 0, 5] }}
+            gl={{ 
+              antialias: true, 
+              alpha: true,
+              preserveDrawingBuffer: false,
+              powerPreference: "default"
+            }}
+            onCreated={({ gl }) => {
+              gl.setClearColor('#000000', 0);
+            }}
+          >
+            <ambientLight intensity={0.5} />
+            <directionalLight position={[10, 10, 5]} intensity={1} />
+            <AnimatedSphere />
+            <OrbitControls 
+              enableZoom={false} 
+              enablePan={false} 
+              autoRotate 
+              autoRotateSpeed={0.5}
+              enableDamping={true}
+              dampingFactor={0.05}
+            />
+          </Canvas>
+        </Suspense>
       </div>
 
       {/* Gradient overlay */}
