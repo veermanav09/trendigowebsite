@@ -19,9 +19,17 @@ const Navigation = () => {
             whileHover={{ scale: 1.05 }}
             className="flex items-center space-x-3"
           >
-            <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">T</span>
-            </div>
+            <motion.div
+              whileHover={{ rotate: 360 }}
+              transition={{ duration: 0.5 }}
+              className="w-12 h-12 rounded-lg overflow-hidden shadow-lg"
+            >
+              <img 
+                src="/lovable-uploads/77ca49e5-d22c-40ce-a2a3-4f8eac57b5cd.png" 
+                alt="Trendigo Logo" 
+                className="w-full h-full object-contain bg-white"
+              />
+            </motion.div>
             <div>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
                 Trendigo
@@ -35,25 +43,36 @@ const Navigation = () => {
               <motion.a
                 key={item}
                 href={`#${item.toLowerCase()}`}
-                whileHover={{ scale: 1.1 }}
+                whileHover={{ 
+                  scale: 1.1,
+                  y: -2,
+                  textShadow: "0px 0px 8px rgba(168, 85, 247, 0.8)"
+                }}
                 whileTap={{ scale: 0.95 }}
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 + 0.5 }}
-                className="text-gray-300 hover:text-white transition-colors relative group"
+                className="text-gray-300 hover:text-white transition-all duration-300 relative group"
               >
                 {item}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-400 to-purple-400 group-hover:w-full transition-all duration-300"></span>
+                <motion.span 
+                  className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-pink-400 to-purple-400"
+                  initial={{ width: 0 }}
+                  whileHover={{ width: "100%" }}
+                  transition={{ duration: 0.3 }}
+                />
               </motion.a>
             ))}
           </div>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden text-white"
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          </motion.button>
         </div>
 
         {isOpen && (
@@ -63,15 +82,19 @@ const Navigation = () => {
             exit={{ opacity: 0, height: 0 }}
             className="md:hidden mt-4 pb-4"
           >
-            {['About', 'Services', 'Packages', 'Contact'].map((item) => (
-              <a
+            {['About', 'Services', 'Packages', 'Contact'].map((item, index) => (
+              <motion.a
                 key={item}
                 href={`#${item.toLowerCase()}`}
-                className="block py-2 text-gray-300 hover:text-white transition-colors"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ x: 10, color: "#a855f7" }}
+                className="block py-2 text-gray-300 hover:text-white transition-all duration-300"
                 onClick={() => setIsOpen(false)}
               >
                 {item}
-              </a>
+              </motion.a>
             ))}
           </motion.div>
         )}
