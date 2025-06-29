@@ -5,7 +5,8 @@ import { motion } from 'framer-motion';
 import { useState, useRef } from 'react';
 import { Instagram, Facebook, Youtube, Linkedin, ArrowRight, Star, TrendingUp, Users, Target } from 'lucide-react';
 import Hero3D from '../components/Hero3D';
-import ServicesSection from '../components/ServicesSection';
+import Services from '../components/Services';
+import Packages from '../components/Packages';
 import AboutSection from '../components/AboutSection';
 import ContactSection from '../components/ContactSection';
 import Navigation from '../components/Navigation';
@@ -16,7 +17,8 @@ const Index = () => {
       <Navigation />
       <Hero3D />
       <AboutSection />
-      <ServicesSection />
+      <Services />
+      <Packages />
       <ContactSection />
     </div>
   );

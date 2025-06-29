@@ -79,7 +79,7 @@ const Hero3D = () => {
               scale: 1.05,
               textShadow: "0px 0px 20px rgba(168, 85, 247, 0.8)"
             }}
-            className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-transparent cursor-default"
+            className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-transparent cursor-default font-mono tracking-wider"
           >
             Trendigo
           </motion.h1>
@@ -89,7 +89,7 @@ const Hero3D = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.2 }}
             whileHover={{ scale: 1.02 }}
-            className="text-2xl md:text-3xl text-gray-300 font-light cursor-default"
+            className="text-2xl md:text-3xl text-gray-300 font-light cursor-default font-serif italic"
           >
             Ride the Trend. Rule the Feed.
           </motion.p>
@@ -98,7 +98,7 @@ const Hero3D = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.4 }}
-            className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed"
+            className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed font-light"
           >
             The social media agency that lives where the trends live. We help your brand stay relevant, 
             engaging, and powerful by creating content that catches the wave before it crashes.

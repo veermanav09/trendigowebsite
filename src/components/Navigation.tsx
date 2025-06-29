@@ -27,22 +27,27 @@ const Navigation = () => {
               <img 
                 src="/lovable-uploads/77ca49e5-d22c-40ce-a2a3-4f8eac57b5cd.png" 
                 alt="Trendigo Logo" 
-                className="w-full h-full object-contain bg-white"
+                className="w-full h-full object-contain"
               />
             </motion.div>
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent font-mono tracking-wide">
                 Trendigo
               </h1>
-              <p className="text-xs text-gray-400">Ride the Trend. Rule the Feed.</p>
+              <p className="text-xs text-gray-400 font-light italic">Ride the Trend. Rule the Feed.</p>
             </div>
           </motion.div>
 
           <div className="hidden md:flex items-center space-x-8">
-            {['About', 'Services', 'Packages', 'Contact'].map((item, index) => (
+            {[
+              { name: 'About', href: '#about' },
+              { name: 'Services', href: '#services' },
+              { name: 'Packages', href: '#packages' },
+              { name: 'Contact', href: '#contact' }
+            ].map((item, index) => (
               <motion.a
-                key={item}
-                href={`#${item.toLowerCase()}`}
+                key={item.name}
+                href={item.href}
                 whileHover={{ 
                   scale: 1.1,
                   y: -2,
@@ -52,9 +57,9 @@ const Navigation = () => {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 + 0.5 }}
-                className="text-gray-300 hover:text-white transition-all duration-300 relative group"
+                className="text-gray-300 hover:text-white transition-all duration-300 relative group font-medium"
               >
-                {item}
+                {item.name}
                 <motion.span 
                   className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-pink-400 to-purple-400"
                   initial={{ width: 0 }}
@@ -63,6 +68,14 @@ const Navigation = () => {
                 />
               </motion.a>
             ))}
+            
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full text-white font-semibold text-sm hover:from-pink-600 hover:to-purple-700 transition-all duration-300"
+            >
+              Book a Call
+            </motion.button>
           </div>
 
           <motion.button
@@ -82,20 +95,34 @@ const Navigation = () => {
             exit={{ opacity: 0, height: 0 }}
             className="md:hidden mt-4 pb-4"
           >
-            {['About', 'Services', 'Packages', 'Contact'].map((item, index) => (
+            {[
+              { name: 'About', href: '#about' },
+              { name: 'Services', href: '#services' },
+              { name: 'Packages', href: '#packages' },
+              { name: 'Contact', href: '#contact' }
+            ].map((item, index) => (
               <motion.a
-                key={item}
-                href={`#${item.toLowerCase()}`}
+                key={item.name}
+                href={item.href}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ x: 10, color: "#a855f7" }}
-                className="block py-2 text-gray-300 hover:text-white transition-all duration-300"
+                className="block py-2 text-gray-300 hover:text-white transition-all duration-300 font-medium"
                 onClick={() => setIsOpen(false)}
               >
-                {item}
+                {item.name}
               </motion.a>
             ))}
+            <motion.button
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+              whileHover={{ scale: 1.05 }}
+              className="mt-4 px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full text-white font-semibold text-sm w-full"
+            >
+              Book a Call
+            </motion.button>
           </motion.div>
         )}
       </div>
