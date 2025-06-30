@@ -10,6 +10,8 @@ import Packages from '../components/Packages';
 import AboutSection from '../components/AboutSection';
 import ContactSection from '../components/ContactSection';
 import Navigation from '../components/Navigation';
+import TestimonialsSection from '../components/TestimonialsSection';
+import Footer from '../components/Footer';
 
 const Index = () => {
   return (
@@ -18,8 +20,10 @@ const Index = () => {
       <Hero3D />
       <AboutSection />
       <Services />
+      <TestimonialsSection />
       <Packages />
       <ContactSection />
+      <Footer />
     </div>
   );
 };

@@ -1,7 +1,8 @@
+
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
-import { Instagram, Facebook, Youtube, Linkedin, TrendingUp, Lock, CheckCircle, ArrowRight, User, Mail, Phone, Building, Target, MessageSquare } from 'lucide-react';
+import { Instagram, Facebook, Youtube, Linkedin, TrendingUp, Lock, CheckCircle, ArrowRight, User, Mail, Phone, Building, Target, MessageSquare, Globe } from 'lucide-react';
 
 const Packages = () => {
   const ref = useRef(null);
@@ -12,23 +13,90 @@ const Packages = () => {
     businessName: '',
     email: '',
     phone: '',
+    country: '',
     industry: '',
     currentFollowers: '',
     goals: ''
   });
 
+  // Country-based pricing multipliers and currencies
+  const countryPricing = {
+    'US': { multiplier: 5, currency: '$', symbol: 'USD' },
+    'UK': { multiplier: 4.2, currency: '£', symbol: 'GBP' },
+    'CA': { multiplier: 4.8, currency: 'C$', symbol: 'CAD' },
+    'AU': { multiplier: 4.5, currency: 'A$', symbol: 'AUD' },
+    'DE': { multiplier: 4, currency: '€', symbol: 'EUR' },
+    'FR': { multiplier: 4, currency: '€', symbol: 'EUR' },
+    'SG': { multiplier: 3.8, currency: 'S$', symbol: 'SGD' },
+    'AE': { multiplier: 3.5, currency: 'AED', symbol: 'AED' },
+    'IN': { multiplier: 1, currency: '₹', symbol: 'INR' },
+    'PK': { multiplier: 0.8, currency: 'Rs.', symbol: 'PKR' },
+    'BD': { multiplier: 0.7, currency: '৳', symbol: 'BDT' },
+    'LK': { multiplier: 0.6, currency: 'Rs.', symbol: 'LKR' },
+    'ZA': { multiplier: 1.2, currency: 'R', symbol: 'ZAR' },
+    'NG': { multiplier: 0.9, currency: '₦', symbol: 'NGN' },
+    'BR': { multiplier: 1.5, currency: 'R$', symbol: 'BRL' },
+    'MX': { multiplier: 1.3, currency: '$', symbol: 'MXN' }
+  };
+
+  const countries = [
+    { code: 'US', name: 'United States' },
+    { code: 'UK', name: 'United Kingdom' },
+    { code: 'CA', name: 'Canada' },
+    { code: 'AU', name: 'Australia' },
+    { code: 'DE', name: 'Germany' },
+    { code: 'FR', name: 'France' },
+    { code: 'SG', name: 'Singapore' },
+    { code: 'AE', name: 'United Arab Emirates' },
+    { code: 'IN', name: 'India' },
+    { code: 'PK', name: 'Pakistan' },
+    { code: 'BD', name: 'Bangladesh' },
+    { code: 'LK', name: 'Sri Lanka' },
+    { code: 'ZA', name: 'South Africa' },
+    { code: 'NG', name: 'Nigeria' },
+    { code: 'BR', name: 'Brazil' },
+    { code: 'MX', name: 'Mexico' }
+  ];
+
+  const calculatePrice = (basePrice: number, countryCode: string) => {
+    const pricing = countryPricing[countryCode as keyof typeof countryPricing] || countryPricing['IN'];
+    const adjustedPrice = Math.round(basePrice * pricing.multiplier);
+    return {
+      price: adjustedPrice.toLocaleString(),
+      currency: pricing.currency,
+      symbol: pricing.symbol
+    };
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // TODO: Once Supabase is connected, replace this with actual database call
-    console.log('Package unlock form submitted:', formData);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    try {
+      // Store form data in Supabase
+      const response = await fetch('/api/store-package-inquiry', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        console.log('Package inquiry stored successfully');
+        setShowPackages(true);
+      } else {
+        console.error('Failed to store package inquiry');
+        // Still show packages for demo purposes
+        setShowPackages(true);
+      }
+    } catch (error) {
+      console.error('Error storing package inquiry:', error);
+      // Still show packages for demo purposes
+      setShowPackages(true);
+    }
     
     setIsSubmitting(false);
-    setShowPackages(true);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -37,6 +105,8 @@ const Packages = () => {
       [e.target.name]: e.target.value
     });
   };
+
+  const selectedCountryPricing = countryPricing[formData.country as keyof typeof countryPricing] || countryPricing['IN'];
 
   const packages = [
     {
@@ -48,15 +118,13 @@ const Packages = () => {
         {
           name: "Strategy Foundation",
           description: "Complete content strategy & growth roadmap",
-          marketPrice: "₹15,000",
-          trendigoPrice: "₹10,000",
+          basePrice: 10000,
           features: ["Content Strategy", "Hashtag Research", "Competitor Analysis", "Growth Roadmap"]
         },
         {
           name: "Full-Service Growth",
           description: "End-to-end Instagram management & content creation",
-          marketPrice: "₹20,000",
-          trendigoPrice: "₹16,000",
+          basePrice: 16000,
           features: ["Everything in Strategy", "Content Creation", "Daily Posting", "Community Management"]
         }
       ]
@@ -70,15 +138,13 @@ const Packages = () => {
         {
           name: "Strategy Foundation",
           description: "Comprehensive Meta platform strategy",
-          marketPrice: "₹18,000",
-          trendigoPrice: "₹12,000",
+          basePrice: 12000,
           features: ["Cross-Platform Strategy", "Audience Research", "Campaign Planning", "Analytics Setup"]
         },
         {
           name: "Full-Service Growth",
           description: "Complete Meta ecosystem management",
-          marketPrice: "₹25,000",
-          trendigoPrice: "₹18,000",
+          basePrice: 18000,
           features: ["Everything in Strategy", "Content Creation", "Ad Management", "Lead Generation"]
         }
       ]
@@ -93,15 +159,13 @@ const Packages = () => {
         {
           name: "Strategy Foundation",
           description: "Unified strategy across all major platforms",
-          marketPrice: "₹25,000",
-          trendigoPrice: "₹20,000",
+          basePrice: 20000,
           features: ["Omnichannel Strategy", "Platform Optimization", "Content Calendar", "Performance Tracking"]
         },
         {
           name: "Full-Service Growth",
           description: "Complete social media ecosystem management",
-          marketPrice: "₹35,000",
-          trendigoPrice: "₹25,000",
+          basePrice: 25000,
           features: ["Everything in Strategy", "Content Creation", "Community Management", "Influencer Outreach"]
         }
       ]
@@ -119,7 +183,7 @@ const Packages = () => {
         >
           <motion.h2 
             className="text-5xl md:text-7xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-6 tracking-tighter"
-            style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+            style={{ fontFamily: 'Space Grotesk, Inter, system-ui, sans-serif' }}
             whileHover={{ scale: 1.02 }}
           >
             Growth Packages
@@ -151,7 +215,7 @@ const Packages = () => {
                 >
                   <Lock size={64} className="text-purple-400" />
                 </motion.div>
-                <h3 className="text-3xl font-bold text-white mb-4 tracking-tight" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+                <h3 className="text-3xl font-bold text-white mb-4 tracking-tight" style={{ fontFamily: 'Space Grotesk, Inter, system-ui, sans-serif' }}>
                   Unlock Your Custom Growth Plan
                 </h3>
                 <p className="text-gray-400 text-lg font-light" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
@@ -188,6 +252,34 @@ const Packages = () => {
                     transition={{ duration: 0.5, delay: 0.7 }}
                   >
                     <label className="block text-gray-300 text-sm font-bold mb-3 flex items-center">
+                      <Globe size={16} className="mr-2 text-purple-400" />
+                      Country
+                    </label>
+                    <select
+                      name="country"
+                      value={formData.country}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-5 py-4 bg-gray-800/50 border border-gray-600 rounded-2xl text-white focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+                      style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+                    >
+                      <option value="">Select your country</option>
+                      {countries.map((country) => (
+                        <option key={country.code} value={country.code}>
+                          {country.name}
+                        </option>
+                      ))}
+                    </select>
+                  </motion.div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                    transition={{ duration: 0.5, delay: 0.8 }}
+                  >
+                    <label className="block text-gray-300 text-sm font-bold mb-3 flex items-center">
                       <Building size={16} className="mr-2 text-purple-400" />
                       Industry
                     </label>
@@ -211,29 +303,6 @@ const Packages = () => {
                       <option value="other">Other</option>
                     </select>
                   </motion.div>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-6">
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-                    transition={{ duration: 0.5, delay: 0.8 }}
-                  >
-                    <label className="block text-gray-300 text-sm font-bold mb-3 flex items-center">
-                      <Mail size={16} className="mr-2 text-purple-400" />
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-5 py-4 bg-gray-800/50 border border-gray-600 rounded-2xl text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
-                      placeholder="your@email.com"
-                      style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
-                    />
-                  </motion.div>
 
                   <motion.div
                     initial={{ opacity: 0, x: 20 }}
@@ -251,7 +320,7 @@ const Packages = () => {
                       onChange={handleInputChange}
                       required
                       className="w-full px-5 py-4 bg-gray-800/50 border border-gray-600 rounded-2xl text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
-                      placeholder="+91 98765 43210"
+                      placeholder="Your phone number"
                       style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
                     />
                   </motion.div>
@@ -261,6 +330,27 @@ const Packages = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   transition={{ duration: 0.5, delay: 1.0 }}
+                >
+                  <label className="block text-gray-300 text-sm font-bold mb-3 flex items-center">
+                    <Mail size={16} className="mr-2 text-purple-400" />
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-5 py-4 bg-gray-800/50 border border-gray-600 rounded-2xl text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+                    placeholder="your@email.com"
+                    style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+                  />
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                  transition={{ duration: 0.5, delay: 1.1 }}
                 >
                   <label className="block text-gray-300 text-sm font-bold mb-3 flex items-center">
                     <TrendingUp size={16} className="mr-2 text-purple-400" />
@@ -286,7 +376,7 @@ const Packages = () => {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                  transition={{ duration: 0.5, delay: 1.1 }}
+                  transition={{ duration: 0.5, delay: 1.2 }}
                 >
                   <label className="block text-gray-300 text-sm font-bold mb-3 flex items-center">
                     <Target size={16} className="mr-2 text-purple-400" />
@@ -310,7 +400,7 @@ const Packages = () => {
                   type="submit"
                   disabled={isSubmitting}
                   className="w-full px-8 py-5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl text-white font-bold text-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 flex items-center justify-center space-x-3 shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+                  style={{ fontFamily: 'Space Grotesk, Inter, system-ui, sans-serif' }}
                 >
                   {isSubmitting ? (
                     <>
@@ -328,7 +418,6 @@ const Packages = () => {
             </div>
           </motion.div>
         ) : (
-          
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -342,11 +431,11 @@ const Packages = () => {
               >
                 <CheckCircle size={64} className="text-green-400 mb-4" />
               </motion.div>
-              <h3 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+              <h3 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Space Grotesk, Inter, system-ui, sans-serif' }}>
                 Perfect! Here are your personalized packages:
               </h3>
               <p className="text-green-400 font-semibold" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
-                Tailored specifically for {formData.businessName}
+                Tailored specifically for {formData.businessName} in {countries.find(c => c.code === formData.country)?.name}
               </p>
             </div>
 
@@ -366,7 +455,7 @@ const Packages = () => {
                         <pkg.icon size={28} className="text-white" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-white tracking-tight" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+                        <h3 className="text-2xl font-bold text-white tracking-tight" style={{ fontFamily: 'Space Grotesk, Inter, system-ui, sans-serif' }}>
                           {pkg.title}
                         </h3>
                         <p className="text-gray-400 text-sm font-light" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
@@ -386,39 +475,44 @@ const Packages = () => {
                     )}
 
                     <div className="space-y-6">
-                      {pkg.plans.map((plan, planIndex) => (
-                        <div key={plan.name} className="border-t border-gray-800 pt-6 first:border-t-0 first:pt-0">
-                          <h4 className="text-xl font-bold text-white mb-2 tracking-tight" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
-                            {plan.name}
-                          </h4>
-                          <p className="text-gray-400 text-sm mb-4 font-light" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
-                            {plan.description}
-                          </p>
-                          
-                          <div className="flex items-center space-x-4 mb-4">
-                            <span className="text-gray-500 text-sm line-through">
-                              {plan.marketPrice}
-                            </span>
-                            <span className="text-2xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
-                              {plan.trendigoPrice}
-                            </span>
-                            <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded-full">
-                              SAVE {Math.round((1 - parseInt(plan.trendigoPrice.replace(/[^\d]/g, '')) / parseInt(plan.marketPrice.replace(/[^\d]/g, ''))) * 100)}%
-                            </span>
-                          </div>
+                      {pkg.plans.map((plan, planIndex) => {
+                        const pricing = calculatePrice(plan.basePrice, formData.country);
+                        const originalPricing = calculatePrice(plan.basePrice * 1.5, formData.country);
+                        
+                        return (
+                          <div key={plan.name} className="border-t border-gray-800 pt-6 first:border-t-0 first:pt-0">
+                            <h4 className="text-xl font-bold text-white mb-2 tracking-tight" style={{ fontFamily: 'Space Grotesk, Inter, system-ui, sans-serif' }}>
+                              {plan.name}
+                            </h4>
+                            <p className="text-gray-400 text-sm mb-4 font-light" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+                              {plan.description}
+                            </p>
+                            
+                            <div className="flex items-center space-x-4 mb-4">
+                              <span className="text-gray-500 text-sm line-through">
+                                {pricing.currency}{originalPricing.price}
+                              </span>
+                              <span className="text-2xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+                                {pricing.currency}{pricing.price}
+                              </span>
+                              <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded-full">
+                                SAVE 33%
+                              </span>
+                            </div>
 
-                          {plan.features && (
-                            <ul className="space-y-2">
-                              {plan.features.map((feature, idx) => (
-                                <li key={idx} className="text-gray-300 text-sm flex items-center" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
-                                  <CheckCircle size={12} className="text-green-400 mr-2 flex-shrink-0" />
-                                  {feature}
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-                      ))}
+                            {plan.features && (
+                              <ul className="space-y-2">
+                                {plan.features.map((feature, idx) => (
+                                  <li key={idx} className="text-gray-300 text-sm flex items-center" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+                                    <CheckCircle size={12} className="text-green-400 mr-2 flex-shrink-0" />
+                                    {feature}
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 </motion.div>
