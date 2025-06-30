@@ -2,46 +2,41 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, Play } from 'lucide-react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Sphere, MeshDistortMaterial, Float, Text3D, Center } from '@react-three/drei';
+import { OrbitControls, Sphere, MeshDistortMaterial, Float } from '@react-three/drei';
+import { Suspense } from 'react';
 
 const FloatingElements = () => {
   return (
     <>
       <Float speed={1.5} rotationIntensity={1} floatIntensity={2}>
-        <Sphere args={[1, 32, 32]} position={[-4, 2, -2]}>
+        <Sphere args={[1, 16, 16]} position={[-4, 2, -2]}>
           <MeshDistortMaterial
             color="#8b5cf6"
-            attach="material"
-            distort={0.4}
-            speed={2}
-            opacity={0.6}
-            transparent
+            distort={0.3}
+            speed={1.5}
+            roughness={0.4}
           />
         </Sphere>
       </Float>
       
       <Float speed={2} rotationIntensity={2} floatIntensity={1}>
-        <Sphere args={[0.7, 32, 32]} position={[4, -1, -1]}>
+        <Sphere args={[0.7, 16, 16]} position={[4, -1, -1]}>
           <MeshDistortMaterial
             color="#ec4899"
-            attach="material"
-            distort={0.3}
-            speed={1.5}
-            opacity={0.7}
-            transparent
+            distort={0.2}
+            speed={1}
+            roughness={0.4}
           />
         </Sphere>
       </Float>
       
       <Float speed={1.2} rotationIntensity={0.5} floatIntensity={3}>
-        <Sphere args={[0.5, 32, 32]} position={[2, 3, -3]}>
+        <Sphere args={[0.5, 16, 16]} position={[2, 3, -3]}>
           <MeshDistortMaterial
             color="#06b6d4"
-            attach="material"
-            distort={0.6}
-            speed={3}
-            opacity={0.5}
-            transparent
+            distort={0.25}
+            speed={2}
+            roughness={0.4}
           />
         </Sphere>
       </Float>
@@ -61,29 +56,49 @@ const Hero3D = () => {
     >
       {/* 3D Canvas Background */}
       <div className="absolute inset-0 z-0">
-        <Canvas camera={{ position: [0, 0, 5] }}>
-          <ambientLight intensity={0.5} />
-          <pointLight position={[10, 10, 10]} />
-          <FloatingElements />
-          <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
+        <Canvas 
+          camera={{ position: [0, 0, 5], fov: 60 }}
+          gl={{ 
+            antialias: true, 
+            alpha: true,
+            powerPreference: "high-performance"
+          }}
+          onCreated={({ gl }) => {
+            gl.setClearColor('#000000', 0);
+          }}
+        >
+          <Suspense fallback={null}>
+            <ambientLight intensity={0.4} />
+            <pointLight position={[10, 10, 10]} intensity={1} />
+            <pointLight position={[-10, -10, -5]} intensity={0.5} color="#8b5cf6" />
+            <FloatingElements />
+            <OrbitControls 
+              enableZoom={false} 
+              enablePan={false} 
+              autoRotate 
+              autoRotateSpeed={0.5}
+              enableDamping
+              dampingFactor={0.05}
+            />
+          </Suspense>
         </Canvas>
       </div>
 
-      {/* Background with subtle overlay */}
+      {/* Background with enhanced overlay */}
       <div className="absolute inset-0 z-10">
-        <div className="w-full h-full bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900">
+        <div className="w-full h-full bg-gradient-to-br from-slate-900 via-purple-900/30 to-slate-900">
           <div 
-            className="absolute inset-0 opacity-3 bg-center bg-no-repeat bg-contain"
+            className="absolute inset-0 opacity-5 bg-center bg-no-repeat bg-contain"
             style={{
               backgroundImage: "url('/lovable-uploads/77ca49e5-d22c-40ce-a2a3-4f8eac57b5cd.png')",
-              backgroundSize: '60%',
+              backgroundSize: '50%',
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/70"></div>
         </div>
       </div>
 
-      {/* Animated background elements */}
+      {/* Enhanced animated background elements */}
       <div className="absolute inset-0 z-15">
         <motion.div
           animate={{ 
@@ -99,26 +114,28 @@ const Hero3D = () => {
         />
         
         {/* Enhanced floating particles */}
-        {[...Array(12)].map((_, i) => (
+        {[...Array(15)].map((_, i) => (
           <motion.div
             key={i}
             animate={{
-              x: [0, 150, -150, 0],
-              y: [0, -150, 150, 0],
-              scale: [1, 2, 1],
+              x: [0, 200 * Math.sin(i), -200 * Math.cos(i), 0],
+              y: [0, -200 * Math.cos(i), 200 * Math.sin(i), 0],
+              scale: [1, 1.5, 0.8, 1],
               rotate: [0, 360],
+              opacity: [0.3, 0.8, 0.3]
             }}
             transition={{
-              duration: 20 + i * 3,
+              duration: 25 + i * 2,
               repeat: Infinity,
               ease: "easeInOut",
-              delay: i * 1.5
+              delay: i * 0.8
             }}
-            className={`absolute w-3 h-3 rounded-full bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 opacity-70 shadow-lg`}
+            className="absolute w-2 h-2 rounded-full bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400"
             style={{
-              top: `${15 + i * 7}%`,
-              left: `${5 + i * 8}%`,
+              top: `${20 + (i * 5) % 60}%`,
+              left: `${10 + (i * 7) % 80}%`,
               filter: 'blur(0.5px)',
+              boxShadow: '0 0 10px rgba(139, 92, 246, 0.5)'
             }}
           />
         ))}
@@ -141,13 +158,13 @@ const Hero3D = () => {
           >
             <motion.h1
               whileHover={{ 
-                scale: 1.05,
+                scale: 1.02,
                 textShadow: "0px 0px 30px rgba(139, 92, 246, 0.8)"
               }}
-              className="text-7xl md:text-9xl font-black bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent cursor-default tracking-tighter"
+              className="text-6xl md:text-8xl font-black bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent cursor-default tracking-tighter leading-tight"
               style={{ fontFamily: 'Space Grotesk, Inter, system-ui, sans-serif' }}
             >
-              Trendigo
+              TrendiGo
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
