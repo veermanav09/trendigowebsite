@@ -1,48 +1,7 @@
 
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, Play } from 'lucide-react';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Sphere, MeshDistortMaterial, Float } from '@react-three/drei';
 import { Suspense } from 'react';
-
-const FloatingElements = () => {
-  return (
-    <>
-      <Float speed={1.5} rotationIntensity={1} floatIntensity={2}>
-        <Sphere args={[1, 16, 16]} position={[-4, 2, -2]}>
-          <MeshDistortMaterial
-            color="#8b5cf6"
-            distort={0.3}
-            speed={1.5}
-            roughness={0.4}
-          />
-        </Sphere>
-      </Float>
-      
-      <Float speed={2} rotationIntensity={2} floatIntensity={1}>
-        <Sphere args={[0.7, 16, 16]} position={[4, -1, -1]}>
-          <MeshDistortMaterial
-            color="#ec4899"
-            distort={0.2}
-            speed={1}
-            roughness={0.4}
-          />
-        </Sphere>
-      </Float>
-      
-      <Float speed={1.2} rotationIntensity={0.5} floatIntensity={3}>
-        <Sphere args={[0.5, 16, 16]} position={[2, 3, -3]}>
-          <MeshDistortMaterial
-            color="#06b6d4"
-            distort={0.25}
-            speed={2}
-            roughness={0.4}
-          />
-        </Sphere>
-      </Float>
-    </>
-  );
-};
 
 const Hero3D = () => {
   const { scrollY } = useScroll();
@@ -54,36 +13,6 @@ const Hero3D = () => {
       style={{ y, opacity }}
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* 3D Canvas Background */}
-      <div className="absolute inset-0 z-0">
-        <Canvas 
-          camera={{ position: [0, 0, 5], fov: 60 }}
-          gl={{ 
-            antialias: true, 
-            alpha: true,
-            powerPreference: "high-performance"
-          }}
-          onCreated={({ gl }) => {
-            gl.setClearColor('#000000', 0);
-          }}
-        >
-          <Suspense fallback={null}>
-            <ambientLight intensity={0.4} />
-            <pointLight position={[10, 10, 10]} intensity={1} />
-            <pointLight position={[-10, -10, -5]} intensity={0.5} color="#8b5cf6" />
-            <FloatingElements />
-            <OrbitControls 
-              enableZoom={false} 
-              enablePan={false} 
-              autoRotate 
-              autoRotateSpeed={0.5}
-              enableDamping
-              dampingFactor={0.05}
-            />
-          </Suspense>
-        </Canvas>
-      </div>
-
       {/* Background with enhanced overlay */}
       <div className="absolute inset-0 z-10">
         <div className="w-full h-full bg-gradient-to-br from-slate-900 via-purple-900/30 to-slate-900">
@@ -98,7 +27,7 @@ const Hero3D = () => {
         </div>
       </div>
 
-      {/* Enhanced animated background elements */}
+      {/* Simplified animated background elements */}
       <div className="absolute inset-0 z-15">
         <motion.div
           animate={{ 
@@ -113,29 +42,27 @@ const Hero3D = () => {
           className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-gradient-to-br from-purple-500/10 to-pink-500/10 blur-3xl"
         />
         
-        {/* Enhanced floating particles */}
-        {[...Array(15)].map((_, i) => (
+        {/* Simplified floating particles */}
+        {[...Array(8)].map((_, i) => (
           <motion.div
             key={i}
             animate={{
-              x: [0, 200 * Math.sin(i), -200 * Math.cos(i), 0],
-              y: [0, -200 * Math.cos(i), 200 * Math.sin(i), 0],
-              scale: [1, 1.5, 0.8, 1],
-              rotate: [0, 360],
-              opacity: [0.3, 0.8, 0.3]
+              x: [0, 100 * Math.sin(i), -100 * Math.cos(i), 0],
+              y: [0, -100 * Math.cos(i), 100 * Math.sin(i), 0],
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.6, 0.3]
             }}
             transition={{
-              duration: 25 + i * 2,
+              duration: 15 + i * 2,
               repeat: Infinity,
               ease: "easeInOut",
-              delay: i * 0.8
+              delay: i * 1
             }}
-            className="absolute w-2 h-2 rounded-full bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400"
+            className="absolute w-1 h-1 rounded-full bg-gradient-to-r from-purple-400 to-pink-400"
             style={{
-              top: `${20 + (i * 5) % 60}%`,
-              left: `${10 + (i * 7) % 80}%`,
+              top: `${30 + (i * 6) % 40}%`,
+              left: `${20 + (i * 8) % 60}%`,
               filter: 'blur(0.5px)',
-              boxShadow: '0 0 10px rgba(139, 92, 246, 0.5)'
             }}
           />
         ))}
@@ -154,14 +81,14 @@ const Hero3D = () => {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.3 }}
-            className="flex flex-col items-center space-y-4 mb-8"
+            className="flex flex-col items-center space-y-6 mb-12"
           >
             <motion.h1
               whileHover={{ 
                 scale: 1.02,
                 textShadow: "0px 0px 30px rgba(139, 92, 246, 0.8)"
               }}
-              className="text-6xl md:text-8xl font-black bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent cursor-default tracking-tighter leading-tight"
+              className="text-5xl md:text-7xl lg:text-8xl font-black bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent cursor-default tracking-tighter leading-none"
               style={{ fontFamily: 'Space Grotesk, Inter, system-ui, sans-serif' }}
             >
               TrendiGo
@@ -170,7 +97,7 @@ const Hero3D = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8 }}
-              className="text-xl md:text-2xl text-gray-300 font-light tracking-wide"
+              className="text-xl md:text-2xl lg:text-3xl text-gray-300 font-light tracking-wide"
               style={{ fontFamily: 'Space Grotesk, Inter, system-ui, sans-serif' }}
             >
               Ride the Trend. Rule the Feed.
@@ -181,7 +108,7 @@ const Hero3D = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.0 }}
-            className="text-lg md:text-xl text-gray-400 max-w-4xl mx-auto leading-relaxed font-light"
+            className="text-lg md:text-xl lg:text-2xl text-gray-400 max-w-4xl mx-auto leading-relaxed font-light mb-8"
             style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
           >
             Transform your brand's digital presence with cutting-edge social media strategies. 
@@ -192,7 +119,7 @@ const Hero3D = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.2 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12"
+            className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-16"
           >
             <motion.a
               href="#contact"
