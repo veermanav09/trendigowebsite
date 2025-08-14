@@ -1,12 +1,12 @@
-# Welcome to your Lovable project
+# Welcome to my SMMA website project
 
 ## Project info
 
 **URL**: https://lovable.dev/projects/3e9a0abe-36e6-4bb9-83c2-0a4b80a64e90
 
-## How can I edit this code?
+## How can you edit this code?
 
-There are several ways of editing your application.
+There are several ways of editing this project.
 
 **Use Lovable**
 
